@@ -1,0 +1,72 @@
+# depslib dependency file v1.0
+1709588035 source:d:\Áóğñ³òºò\2_course\ÁÄ²Ñ\db_laba1\main.cpp
+	<fstream>
+	<iostream>
+	<string>
+	<cstring>
+	<time.h>
+	<vector>
+	<algorithm>
+	<iomanip>
+	<cstdio>
+	"Command.h"
+
+1709589148 d:\Áóğñ³òºò\2_course\ÁÄ²Ñ\db_laba1\command.h
+	<fstream>
+	<iostream>
+	<string>
+	<cstring>
+	<time.h>
+	<vector>
+	<algorithm>
+	<iomanip>
+	<cstdio>
+	"FileProcess.h"
+
+1709587996 d:\Áóğñ³òºò\2_course\ÁÄ²Ñ\db_laba1\fileprocess.h
+	<fstream>
+	<iostream>
+	<string>
+	<cstring>
+	<time.h>
+	<vector>
+	<algorithm>
+	<iomanip>
+	<cstdio>
+	"ReadData.h"
+
+1709587923 d:\Áóğñ³òºò\2_course\ÁÄ²Ñ\db_laba1\readdata.h
+	<fstream>
+	<iostream>
+	<string>
+	<cstring>
+	<time.h>
+	<vector>
+	<algorithm>
+	<iomanip>
+	<cstdio>
+	"WriteTable.h"
+
+1709589146 d:\Áóğñ³òºò\2_course\ÁÄ²Ñ\db_laba1\writetable.h
+	<fstream>
+	<iostream>
+	<string>
+	<cstring>
+	<time.h>
+	<vector>
+	<algorithm>
+	<iomanip>
+	<cstdio>
+	"Structures.h"
+
+1709587907 d:\Áóğñ³òºò\2_course\ÁÄ²Ñ\db_laba1\structures.h
+	<fstream>
+	<iostream>
+	<string>
+	<cstring>
+	<time.h>
+	<vector>
+	<algorithm>
+	<iomanip>
+	<cstdio>
+

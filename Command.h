@@ -7,178 +7,9 @@
 #include <algorithm>
 #include <iomanip>
 #include <cstdio>
+#include "FileProcess.h"
 
 using namespace std;
-int c=0;
-
-struct TVshow{
-    uint32_t id = 0;
-    char name[50] = {};
-    char category[50] = {};
-    int64_t first_host = -1;
-    bool exists = true;
-};
-
-struct TVhost{
-    uint32_t ssn = 0;
-    char email[100] = {};
-    char phone_number[25] = {};
-    char first_name[50] = {};
-    char second_name[50] = {};
-    char birth_date[25] = {};
-    int64_t next = -1;
-    bool exists = true;
-};
-
-void drawHorizontalLine(int width, char lineChar = '-') {
-    for (int i = 0; i < width; ++i) {
-        std::cout << lineChar;
-    }
-    std::cout << std::endl;
-}
-
-void drawShowTableRow(TVshow record, bool title, bool ut, streampos pos) {
-    std::cout << "|";
-    int idcolwidth=10;
-    int colwidth=20;
-    if (!title){
-        std::cout << std::left << std::setw(idcolwidth) << record.id;
-        std::cout << "|";
-        std::cout << std::left << std::setw(colwidth) << record.name;
-        std::cout << "|";
-        std::cout << std::left << std::setw(colwidth) << record.category;
-        if (ut){
-            std::cout << "|";
-            std::cout << std::left << std::setw(colwidth) << record.first_host;
-            std::cout << "|";
-            std::cout << std::left << std::setw(colwidth) << pos;
-            std::cout << "|";
-            string exist="FALSE";
-            if (record.exists){
-                exist="TRUE";
-            }
-            std::cout << std::left << std::setw(colwidth) << exist;
-        }
-        std::cout << "|" << std::endl;
-    }
-    else{
-        std::cout << std::left << std::setw(idcolwidth) << "ID";
-        std::cout << "|";
-        std::cout << std::left << std::setw(colwidth) << "NAME";
-        std::cout << "|";
-        std::cout << std::left << std::setw(colwidth) << "CATEGORY";
-        if (ut){
-            std::cout << "|";
-            std::cout << std::left << std::setw(colwidth) << "FIRST HOST";
-            std::cout << "|";
-            std::cout << std::left << std::setw(colwidth) << "ADDRESS";
-            std::cout << "|";
-            std::cout << std::left << std::setw(colwidth) << "PRESENT";
-        }
-        std::cout << "|" << std::endl;
-    }
-
-}
-
-void drawHostTableRow(TVhost record, bool title, bool ut, streampos pos) {
-    std::cout << "|";
-    int idcolwidth=10;
-    int colwidth=20;
-    if (!title){
-        std::cout << std::left << std::setw(idcolwidth) << record.ssn;
-        std::cout << "|";
-        std::cout << std::left << std::setw(colwidth) << record.first_name;
-        std::cout << "|";
-        std::cout << std::left << std::setw(colwidth) << record.second_name;
-        std::cout << "|";
-        std::cout << std::left << std::setw(colwidth) << record.email;
-        std::cout << "|";
-        std::cout << std::left << std::setw(colwidth) << record.phone_number;
-        std::cout << "|";
-        std::cout << std::left << std::setw(colwidth) << record.birth_date;
-        if (ut){
-            std::cout << "|";
-            std::cout << std::left << std::setw(colwidth) << record.next;
-            std::cout << "|";
-            std::cout << std::left << std::setw(colwidth) << pos;
-            std::cout << "|";
-            string exist="FALSE";
-            if (record.exists){
-                exist="TRUE";
-            }
-            std::cout << std::left << std::setw(colwidth) << exist;
-        }
-        std::cout << "|" << std::endl;
-    }
-    else{
-        std::cout << std::left << std::setw(idcolwidth) << "SSN";
-        std::cout << "|";
-        std::cout << std::left << std::setw(colwidth) << "FIRST NAME";
-        std::cout << "|";
-        std::cout << std::left << std::setw(colwidth) << "SECOND NAME";
-        std::cout << "|";
-        std::cout << std::left << std::setw(colwidth) << "E-MAIL ADDRESS";
-        std::cout << "|";
-        std::cout << std::left << std::setw(colwidth) << "PHONE NUMBER";
-        std::cout << "|";
-        std::cout << std::left << std::setw(colwidth) << "BIRTH DATE";
-        if (ut){
-            std::cout << "|";
-            std::cout << std::left << std::setw(colwidth) << "NEXT HOST";
-            std::cout << "|";
-            std::cout << std::left << std::setw(colwidth) << "ADDRESS";
-            std::cout << "|";
-            std::cout << std::left << std::setw(colwidth) << "PRESENT";
-        }
-        std::cout << "|" << std::endl;
-    }
-}
-
-bool ReadHost(TVhost& record, std::fstream& file, const std::streampos& pos)
-{
-    if (!file)
-        return false;
-
-    file.seekg(pos);
-    file.read(reinterpret_cast<char*>(&record), sizeof(TVhost));
-
-    return !file.fail();
-}
-
-bool WriteHost(const TVhost& record, std::fstream& file, const std::streampos& pos)
-{
-    if (!file)
-        return false;
-
-    file.seekp(pos);
-    file.write(reinterpret_cast<const char*>(&record), sizeof(TVhost));
-    file.flush();
-
-    return !file.fail();
-}
-
-bool ReadShow(TVshow& record, std::fstream& file, const std::streampos& pos)
-{
-    if (!file)
-        return false;
-
-    file.seekg(pos);
-    file.read(reinterpret_cast<char*>(&record), sizeof(TVshow));
-
-    return !file.fail();
-}
-
-bool WriteShow(const TVshow& record, std::fstream& file, const std::streampos& pos)
-{
-    if (!file)
-        return false;
-
-    file.seekp(pos);
-    file.write(reinterpret_cast<const char*>(&record), sizeof(TVshow));
-    file.flush();
-
-    return !file.fail();
-}
 
 void PrintNodesShow(std::fstream& file, vector<pair<int, streampos>>& ind)
 {
@@ -257,6 +88,45 @@ void PrintNodesHost(std::fstream& file, vector<pair<int, streampos>>& ind, std::
                 }
                 next_ptr=tmp.next;
             }
+        }
+    }
+    drawHorizontalLine(showtablewidth);
+}
+
+void PrintNodesHostByShow(std::fstream& file, vector<pair<int, streampos>>& ind, std::fstream& master_file, int num)
+{
+    TVshow master_tmp;
+    TVhost tmp;
+
+    int showtablewidth=117;
+    drawHorizontalLine(showtablewidth);
+    drawHostTableRow(tmp, true, false, -1);
+    drawHorizontalLine(showtablewidth);
+
+
+    for (int i=1; i<ind.size(); i++){
+        if (ind[i].first==num){
+            if (!ReadShow(master_tmp, master_file, ind[i].second))
+            {
+                std::cerr << "Unable to update next_ptr. Error: read failed" << std::endl;
+                return;
+            }
+            if (master_tmp.exists){
+                streampos next_ptr=master_tmp.first_host;
+                while (next_ptr!=-1)
+                {
+                    if (!ReadHost(tmp, file, next_ptr))
+                    {
+                        std::cerr << "Unable to update next_ptr. Error: read failed" << std::endl;
+                        return;
+                    }
+                    if (tmp.exists){
+                        drawHostTableRow(tmp, false, false, next_ptr);
+                    }
+                    next_ptr=tmp.next;
+                }
+            }
+            break;
         }
     }
     drawHorizontalLine(showtablewidth);
@@ -359,6 +229,23 @@ bool GetHost(std::fstream& file, std::vector<pair<int, streampos>>& ind, std::fs
     query=query.substr(1);
     if (query=="all"){
         PrintNodesHost(file, ind, master_file);
+        return true;
+    }
+    if (query[0]=='m'){
+        query=query.substr(2);
+        string numba="";
+        int index=-1;
+        for (int i=0; i<query.size(); i++)
+        {
+            if (query[i]==' ')
+            {
+                index=i+1;
+                break;
+            }
+            numba.push_back(query[i]);
+        }
+        int num=stoi(numba);
+        PrintNodesHostByShow(file, ind, master_file, num);
         return true;
     }
 
@@ -522,7 +409,7 @@ bool AddNodeShow(std::fstream& file, std::vector<pair<int, streampos>>& ind, std
     if (rubbish.empty())
     {
         file.seekg(0, std::ios::end);
-        std::streampos pos=file.tellg();
+        pos=file.tellg();
     }
     else{
         pos=rubbish[rubbish.size()-1];
@@ -663,7 +550,6 @@ bool RemoveNodeHost(std::fstream& file, std::vector<pair<int, streampos>>& ind, 
                     return false;
                 }
                 slave_rubbish.push_back(next_ptr);
-                c++;
                 return true;
             }
             prev_ptr=next_ptr;
@@ -703,7 +589,6 @@ bool RemoveNodeShow(std::fstream& master_file, std::vector<pair<int, streampos>>
         std::cerr << "Unable to update next_ptr. Error: write failed" << std::endl;
         return false;
     }
-    c++;
     rubbish.push_back(addr);
     streampos next_ptr=master_tmp.first_host;
     while (next_ptr!=-1)
@@ -719,7 +604,6 @@ bool RemoveNodeShow(std::fstream& master_file, std::vector<pair<int, streampos>>
             std::cerr << "Unable to update next_ptr. Error: write failed" << std::endl;
             return false;
         }
-        c++;
         slave_rubbish.push_back(next_ptr);
         next_ptr=tmp.next;
     }
@@ -774,42 +658,9 @@ void CalcNodesHost(std::fstream& file, vector<pair<int, streampos>>& ind, std::f
     std::cout<<"There are "<<calc<<" TV Host nodes"<<endl;
 }
 
-bool ReadIndex(std::fstream& file, std::vector<pair<int, streampos>>& ind)
-{
-    if (!file)
-        return false;
-
-    std::streampos pos=0;
-
-    while (!file.eof())
-    {
-        pair<int, streampos> el;
-        file.seekg(pos);
-        file.read(reinterpret_cast<char*>(&el), sizeof(el));
-        pos+=sizeof(el);
-        ind.push_back(el);
-    }
-
-    sort(ind.begin(), ind.end());
-    return !file.fail();
-}
-
-bool WriteIndex(std::fstream& file, std::vector<pair<int, streampos>>& ind)
-{
-    if (!file)
-        return false;
 
 
-    std::streampos pos=0;
-    for (int i=1; i<ind.size(); i++){
-        file.seekp(pos);
-        file.write(reinterpret_cast<const char*>(&ind[i]), sizeof(ind[i]));
-        pos+=sizeof(ind[i]);
-    }
-    file.flush();
 
-    return !file.fail();
-}
 
 void print_help()
 {
@@ -830,241 +681,11 @@ void print_help()
     "exit: ends the program\n";
 }
 
-bool open_file(fstream * file, string filename, bool not_temp)
-{
-    if (not_temp){
-        *file = fstream(filename, std::ios::binary | std::ios::in | std::ios::out);
-    }
-    else{
-        *file = fstream(filename, std::ios::binary | std::ios::in | std::ios::out | std::ios::trunc);
-    }
-    auto err = errno;
 
-    if (err == ENOENT)
-    {
-         *file = fstream(filename, std::ios::binary | std::ios::in | std::ios::out | std::ios::trunc);
-    }
-
-    if (!*file) {
-        std::cerr << "Unable to open file=" << filename << std::endl;
-
-        return false;
-    }
-    return true;
-}
-
-bool reorganize(fstream& master_file, fstream& slave_file, std::vector<pair<int, streampos>>& ind, vector<streampos>& rubbish, vector<streampos>& slave_rubbish)
-{
-    fstream master_temp, slave_temp;
-    open_file(&master_temp, "master_temp.bin", true);
-    open_file(&slave_temp, "slave_temp.bin", true);
-    rubbish={};
-    slave_rubbish={};
-
-    TVshow master_tmp;
-    TVhost prev_tmp;
-    TVhost tmp;
-
-    streampos pos=0;
-    streampos slave_pos=0;
-
-    for (int i=1; i<ind.size(); i++){
-        if (!ReadShow(master_tmp, master_file, ind[i].second))
-        {
-            std::cerr << "Unable to update next_ptr. Error: read failed" << std::endl;
-            return false;
-        }
-        ind[i].second=pos;
-        streampos next_ptr=master_tmp.first_host;
-        streampos prev_ptr=-1;
-
-        while (next_ptr!=-1)
-        {
-            if (!ReadHost(tmp, slave_file, next_ptr))
-            {
-                std::cerr << "Unable to update next_ptr. Error: read failed" << std::endl;
-                return false;
-            }
-            if (tmp.exists){
-                if (prev_ptr==-1)
-                {
-                    master_tmp.first_host=slave_pos;
-                }
-                else{
-                    if (!ReadHost(prev_tmp, slave_temp, prev_ptr))
-                    {
-                        std::cerr << "Unable to update next_ptr. Error: read failed" << std::endl;
-                        return false;
-                    }
-                    prev_tmp.next=slave_pos;
-                    if (!WriteHost(prev_tmp, slave_temp, prev_ptr))
-                    {
-                        std::cerr << "Unable to update next_ptr. Error: read failed" << std::endl;
-                        return false;
-                    }
-                }
-                if (!WriteHost(tmp, slave_temp, slave_pos))
-                {
-                    std::cerr << "Unable to update next_ptr. Error: read failed" << std::endl;
-                    return false;
-                }
-                prev_ptr=slave_pos;
-                slave_pos+=sizeof(tmp);
-            }
-            next_ptr=tmp.next;
-        }
-        if (!WriteShow(master_tmp, master_temp, pos))
-        {
-            std::cerr << "Unable to update next_ptr. Error: read failed" << std::endl;
-            return false;
-        }
-        pos+=sizeof(master_tmp);
-    }
-
-    int res;
-
-    open_file(&master_file, "master.bin", false);
-
-    streampos endpos;
-
-    master_temp.seekg(0, std::ios::end);
-    endpos=master_temp.tellg();
-
-    for (int pos=0; pos<endpos; pos+=sizeof(master_tmp))
-    {
-        if (!ReadShow(master_tmp, master_temp, pos))
-        {
-            std::cerr << "Unable to update next_ptr. Error: read failed" << std::endl;
-            return false;
-        }
-        if (!WriteShow(master_tmp, master_file, pos))
-        {
-            std::cerr << "Unable to update next_ptr. Error: read failed" << std::endl;
-            return false;
-        }
-    }
-
-    master_temp.close();
-    res = remove(".\\master_temp.bin");
-
-    open_file(&slave_file, "slave.bin", false);
-
-    slave_temp.seekg(0, std::ios::end);
-    endpos=slave_temp.tellg();
-
-    for (int pos=0; pos<endpos; pos+=sizeof(tmp))
-    {
-        if (!ReadHost(tmp, slave_temp, pos))
-        {
-            std::cerr << "Unable to update next_ptr. Error: read failed" << std::endl;
-            return false;
-        }
-        if (!WriteHost(tmp, slave_file, pos))
-        {
-            std::cerr << "Unable to update next_ptr. Error: read failed" << std::endl;
-            return false;
-        }
-    }
-
-    slave_temp.close();
-    res = remove(".\\slave_temp.bin");
-
-    return true;
-}
 
 void OnExit(std::fstream& masterind_file, std::fstream& master_file, std::fstream& slave_file, std::vector<pair<int, streampos>>& ind,
             vector<streampos>& rubbish, vector<streampos>& slave_rubbish)
 {
     reorganize(master_file, slave_file, ind, rubbish, slave_rubbish);
     WriteIndex(masterind_file, ind);
-}
-
-int main()
-{
-    std::streampos write_pos = 0;
-    std::streampos prev_pos = -1;
-    std::vector<streampos> rubbish = {};
-    std::vector<streampos> slave_rubbish = {};
-    std::vector<pair<int, streampos>> ind;
-    fstream slave_file;
-    fstream master_file;
-    fstream masterind_temp_file;
-    fstream masterind_file;
-    int max_del=5;
-
-    open_file(&slave_file, "slave.bin", true);
-    open_file(&master_file, "master.bin", true);
-    open_file(&masterind_temp_file, "masterind.bin", true);
-    ReadIndex(masterind_temp_file, ind);
-    open_file(&masterind_file, "masterind.bin", false);
-
-    string query;
-    while (true)
-    {
-        cout<<">>";
-        cin>>query;
-        if (query=="insert-m"){
-            AddNodeShow(master_file, ind, rubbish);
-        }
-        else if (query=="insert-s"){
-            AddNodeHost(slave_file, master_file, ind, slave_rubbish);
-        }
-        else if (query=="del-m"){
-            int num;
-            cin>>num;
-            RemoveNodeShow(master_file, ind, slave_file, rubbish, slave_rubbish, num);
-        }
-        else if (query=="del-s"){
-            int num;
-            cin>>num;
-            RemoveNodeHost(slave_file, ind, master_file, slave_rubbish, num);
-        }
-        else if (query=="update-m"){
-            int num;
-            string field, value;
-            cin>>num>>field>>value;
-            UpdateShow(master_file, ind, num, field, value);
-        }
-        else if (query=="update-s"){
-            int num;
-            string field, value;
-            cin>>num>>field>>value;
-            UpdateHost(slave_file, ind, master_file, num, field, value);
-        }
-        else if (query=="get-m"){
-            string query;
-            getline(cin, query);
-            GetShow(master_file, ind, query);
-        }
-        else if (query=="get-s"){
-            string query;
-            getline(cin, query);
-            GetHost(slave_file, ind, master_file, query);
-        }
-        else if (query=="ut-m"){
-            PrintNodesShowUT(master_file, ind);
-        }
-        else if (query=="ut-s"){
-            PrintNodesHostUT(slave_file, ind, master_file);
-        }
-        else if (query=="calc-m"){
-            CalcNodesShow(master_file, ind);
-        }
-        else if (query=="calc-s"){
-            CalcNodesHost(slave_file, ind, master_file);
-        }
-        else if (query=="help"){
-            print_help();
-        }
-        else if (query=="exit"){
-            OnExit(masterind_file, master_file, slave_file, ind, rubbish, slave_rubbish);
-            break;
-        }
-        if (c>=max_del)
-        {
-            reorganize(master_file, slave_file, ind, rubbish, slave_rubbish);
-            c=0;
-        }
-    }
-    return 0;
 }
