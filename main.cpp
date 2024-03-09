@@ -7,9 +7,11 @@
 #include <algorithm>
 #include <iomanip>
 #include <cstdio>
+#include <stdio.h>
 #include "Command.h"
 
 using namespace std;
+int max_del=5;
 
 
 void run_app(std::fstream& masterind_file, std::fstream& master_file, std::fstream& slave_file, std::vector<pair<int, streampos>>& ind,
@@ -29,24 +31,52 @@ void run_app(std::fstream& masterind_file, std::fstream& master_file, std::fstre
         else if (query=="del-m"){
             int num;
             cin>>num;
-            RemoveNodeShow(master_file, ind, slave_file, rubbish, slave_rubbish, num);
+            if (cin.fail()){
+                cout<<"Wrong data type!"<<endl;
+                cin.clear();
+                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            }
+            else{
+                RemoveNodeShow(master_file, ind, slave_file, rubbish, slave_rubbish, num);
+            }
         }
         else if (query=="del-s"){
             int num;
             cin>>num;
-            RemoveNodeHost(slave_file, ind, master_file, slave_rubbish, num);
+            if (cin.fail()){
+                cout<<"Wrong data type!"<<endl;
+                cin.clear();
+                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            }
+            else{
+                RemoveNodeHost(slave_file, ind, master_file, slave_rubbish, num);
+            }
         }
         else if (query=="update-m"){
             int num;
             string field, value;
             cin>>num>>field>>value;
-            UpdateShow(master_file, ind, num, field, value);
+            if (cin.fail()){
+                cout<<"Wrong data type!"<<endl;
+                cin.clear();
+                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            }
+            else{
+                UpdateShow(master_file, ind, num, field, value);
+            }
         }
         else if (query=="update-s"){
             int num;
             string field, value;
             cin>>num>>field>>value;
-            UpdateHost(slave_file, ind, master_file, num, field, value);
+            if (cin.fail()){
+                cout<<"Wrong data type!"<<endl;
+                cin.clear();
+                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            }
+            else{
+                UpdateHost(slave_file, ind, master_file, num, field, value);
+            }
         }
         else if (query=="get-m"){
             string query;
@@ -77,7 +107,7 @@ void run_app(std::fstream& masterind_file, std::fstream& master_file, std::fstre
             OnExit(masterind_file, master_file, slave_file, ind, rubbish, slave_rubbish);
             break;
         }
-        if (rubbish.size()>=5 || slave_rubbish.size()>=5)
+        if (rubbish.size() >= max_del || slave_rubbish.size() >= max_del)
         {
             reorganize(master_file, slave_file, ind, rubbish, slave_rubbish);
         }
@@ -95,7 +125,6 @@ int main()
     fstream master_file;
     fstream masterind_temp_file;
     fstream masterind_file;
-    int max_del=5;
 
     open_file(&slave_file, "slave.bin", true);
     open_file(&master_file, "master.bin", true);

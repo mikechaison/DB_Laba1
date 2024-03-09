@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <iomanip>
 #include <cstdio>
+#include <stdio.h>
 #include "Structures.h"
 
 using namespace std;

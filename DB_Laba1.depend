@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1709588035 source:d:\Áóğñ³òºò\2_course\ÁÄ²Ñ\db_laba1\main.cpp
+1710000215 source:d:\Áóğñ³òºò\2_course\ÁÄ²Ñ\db_laba1\main.cpp
 	<fstream>
 	<iostream>
 	<string>
@@ -9,9 +9,10 @@
 	<algorithm>
 	<iomanip>
 	<cstdio>
+	<stdio.h>
 	"Command.h"
 
-1709589148 d:\Áóğñ³òºò\2_course\ÁÄ²Ñ\db_laba1\command.h
+1710006219 d:\Áóğñ³òºò\2_course\ÁÄ²Ñ\db_laba1\command.h
 	<fstream>
 	<iostream>
 	<string>
@@ -21,9 +22,10 @@
 	<algorithm>
 	<iomanip>
 	<cstdio>
+	<stdio.h>
 	"FileProcess.h"
 
-1709587996 d:\Áóğñ³òºò\2_course\ÁÄ²Ñ\db_laba1\fileprocess.h
+1709997968 d:\Áóğñ³òºò\2_course\ÁÄ²Ñ\db_laba1\fileprocess.h
 	<fstream>
 	<iostream>
 	<string>
@@ -33,9 +35,10 @@
 	<algorithm>
 	<iomanip>
 	<cstdio>
+	<stdio.h>
 	"ReadData.h"
 
-1709587923 d:\Áóğñ³òºò\2_course\ÁÄ²Ñ\db_laba1\readdata.h
+1709993546 d:\Áóğñ³òºò\2_course\ÁÄ²Ñ\db_laba1\readdata.h
 	<fstream>
 	<iostream>
 	<string>
@@ -45,9 +48,10 @@
 	<algorithm>
 	<iomanip>
 	<cstdio>
+	<stdio.h>
 	"WriteTable.h"
 
-1709589146 d:\Áóğñ³òºò\2_course\ÁÄ²Ñ\db_laba1\writetable.h
+1709993555 d:\Áóğñ³òºò\2_course\ÁÄ²Ñ\db_laba1\writetable.h
 	<fstream>
 	<iostream>
 	<string>
@@ -57,9 +61,10 @@
 	<algorithm>
 	<iomanip>
 	<cstdio>
+	<stdio.h>
 	"Structures.h"
 
-1709587907 d:\Áóğñ³òºò\2_course\ÁÄ²Ñ\db_laba1\structures.h
+1709993550 d:\Áóğñ³òºò\2_course\ÁÄ²Ñ\db_laba1\structures.h
 	<fstream>
 	<iostream>
 	<string>
@@ -69,4 +74,5 @@
 	<algorithm>
 	<iomanip>
 	<cstdio>
+	<stdio.h>
 

@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <iomanip>
 #include <cstdio>
+#include <stdio.h>
 #include "ReadData.h"
 
 using namespace std;
@@ -31,6 +32,12 @@ bool open_file(fstream * file, string filename, bool not_temp)
 
         return false;
     }
+
+    if (file->fail()) {
+        std::cerr << "Failed to open file=" << filename << std::endl;
+        return false;
+    }
+
     return true;
 }
 
@@ -106,51 +113,17 @@ bool reorganize(fstream& master_file, fstream& slave_file, std::vector<pair<int,
 
     int res;
 
-    open_file(&master_file, "master.bin", false);
-
-    streampos endpos;
-
-    master_temp.seekg(0, std::ios::end);
-    endpos=master_temp.tellg();
-
-    for (int pos=0; pos<endpos; pos+=sizeof(master_tmp))
-    {
-        if (!ReadShow(master_tmp, master_temp, pos))
-        {
-            std::cerr << "Unable to update next_ptr. Error: read failed" << std::endl;
-            return false;
-        }
-        if (!WriteShow(master_tmp, master_file, pos))
-        {
-            std::cerr << "Unable to update next_ptr. Error: read failed" << std::endl;
-            return false;
-        }
-    }
-
+    master_file.close();
     master_temp.close();
-    res = remove(".\\master_temp.bin");
+    res = remove(".\\master.bin");
+    res = rename("master_temp.bin", "master.bin");
+    master_file.open("master.bin");
 
-    open_file(&slave_file, "slave.bin", false);
-
-    slave_temp.seekg(0, std::ios::end);
-    endpos=slave_temp.tellg();
-
-    for (int pos=0; pos<endpos; pos+=sizeof(tmp))
-    {
-        if (!ReadHost(tmp, slave_temp, pos))
-        {
-            std::cerr << "Unable to update next_ptr. Error: read failed" << std::endl;
-            return false;
-        }
-        if (!WriteHost(tmp, slave_file, pos))
-        {
-            std::cerr << "Unable to update next_ptr. Error: read failed" << std::endl;
-            return false;
-        }
-    }
-
+    slave_file.close();
     slave_temp.close();
-    res = remove(".\\slave_temp.bin");
+    res = remove(".\\slave.bin");
+    res = rename("slave_temp.bin", "slave.bin");
+    slave_file.open("slave.bin");
 
     return true;
 }

@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <iomanip>
 #include <cstdio>
+#include <stdio.h>
 #include "FileProcess.h"
 
 using namespace std;
@@ -159,7 +160,7 @@ void PrintNodesHostUT(std::fstream& file, vector<pair<int, streampos>>& ind, std
 bool GetShow(std::fstream& file, std::vector<pair<int, streampos>>& ind, string query)
 {
     TVshow record;
-    streampos pos=0;
+    streampos pos=-1;
 
     query=query.substr(1);
     if (query=="all"){
@@ -183,7 +184,17 @@ bool GetShow(std::fstream& file, std::vector<pair<int, streampos>>& ind, string 
     {
         field=query.substr(index);
     }
-    int num=stoi(numba);
+
+    int num=-1;
+
+    try{
+        num=stoi(numba);
+    }
+    catch (invalid_argument)
+    {
+        cout<<"Wrong data type!"<<endl;
+        return false;
+    }
 
     for (int i=1; i<ind.size(); i++)
     {
@@ -192,6 +203,12 @@ bool GetShow(std::fstream& file, std::vector<pair<int, streampos>>& ind, string 
             pos=ind[i].second;
             break;
         }
+    }
+
+    if (pos==-1)
+    {
+        cout<<"Node was not found!"<<endl;
+        return false;
     }
 
     if (!ReadShow(record, file, pos))
@@ -215,6 +232,10 @@ bool GetShow(std::fstream& file, std::vector<pair<int, streampos>>& ind, string 
         else if (field=="category"){
             cout<<record.category<<endl;
         }
+        else{
+            cout<<"Argument does not exist!"<<endl;
+            return false;
+        }
         return true;
     }
     cout<<"Node was not found!"<<endl;
@@ -232,9 +253,14 @@ bool GetHost(std::fstream& file, std::vector<pair<int, streampos>>& ind, std::fs
         return true;
     }
     if (query[0]=='m'){
+        if (query.size()<3){
+            cout<<"Wrong data type!"<<endl;
+            return false;
+        }
         query=query.substr(2);
         string numba="";
         int index=-1;
+        int num=-1;
         for (int i=0; i<query.size(); i++)
         {
             if (query[i]==' ')
@@ -244,7 +270,30 @@ bool GetHost(std::fstream& file, std::vector<pair<int, streampos>>& ind, std::fs
             }
             numba.push_back(query[i]);
         }
-        int num=stoi(numba);
+
+        try{
+            num=stoi(numba);
+        }
+        catch (invalid_argument)
+        {
+            cout<<"Wrong data type!"<<endl;
+            return false;
+        }
+
+        int master_num=-1;
+        for (int i=1; i<ind.size(); i++)
+        {
+            if (ind[i].first==num)
+            {
+                master_num=ind[i].first;
+                break;
+            }
+        }
+
+        if (master_num==-1){
+            cout<<"Show with that ID doesn't exist!"<<endl;
+            return false;
+        }
         PrintNodesHostByShow(file, ind, master_file, num);
         return true;
     }
@@ -265,7 +314,17 @@ bool GetHost(std::fstream& file, std::vector<pair<int, streampos>>& ind, std::fs
     {
         field=query.substr(index);
     }
-    int num=stoi(numba);
+
+    int num=-1;
+
+    try{
+        num=stoi(numba);
+    }
+    catch (invalid_argument)
+    {
+        cout<<"Wrong data type!"<<endl;
+        return false;
+    }
 
     for (int i=1; i<ind.size(); i++){
         if (!ReadShow(master_tmp, master_file, ind[i].second))
@@ -305,6 +364,10 @@ bool GetHost(std::fstream& file, std::vector<pair<int, streampos>>& ind, std::fs
                 else if (field=="birth_date"){
                     cout<<tmp.birth_date<<endl;
                 }
+                else{
+                    cout<<"Argument does not exist!"<<endl;
+                    return false;
+                }
                 return true;
             }
             next_ptr=tmp.next;
@@ -317,7 +380,7 @@ bool GetHost(std::fstream& file, std::vector<pair<int, streampos>>& ind, std::fs
 bool UpdateShow(std::fstream& file, std::vector<pair<int, streampos>>& ind, int num, string field, string value)
 {
     TVshow record;
-    streampos pos=0;
+    streampos pos=-1;
     for (int i=1; i<ind.size(); i++)
     {
         if (ind[i].first==num)
@@ -325,6 +388,12 @@ bool UpdateShow(std::fstream& file, std::vector<pair<int, streampos>>& ind, int 
             pos=ind[i].second;
             break;
         }
+    }
+
+    if (pos==-1)
+    {
+        cout<<"Node was not found"<<endl;
+        return false;
     }
 
     if (!ReadShow(record, file, pos))
@@ -339,6 +408,11 @@ bool UpdateShow(std::fstream& file, std::vector<pair<int, streampos>>& ind, int 
         }
         else if (field=="category"){
             strcpy(record.category, value.c_str());
+        }
+        else
+        {
+            cout<<"Argument does not exist!"<<endl;
+            return false;
         }
         if (!WriteShow(record, file, pos))
         {
@@ -385,6 +459,10 @@ bool UpdateHost(std::fstream& file, std::vector<pair<int, streampos>>& ind, std:
                 }
                 else if (field=="birth_date"){
                     strcpy(tmp.birth_date, value.c_str());
+                }
+                else{
+                    cout<<"Argument does not exist!"<<endl;
+                    return false;
                 }
                 if (!WriteHost(tmp, file, next_ptr))
                 {
@@ -438,7 +516,42 @@ bool AddNodeShow(std::fstream& file, std::vector<pair<int, streampos>>& ind, std
 bool AddNodeHost(std::fstream& file, std::fstream& master_file, vector<pair<int, streampos>>& ind, std::vector<streampos>& slave_rubbish)
 {
     TVhost record;
+    TVshow master_tmp;
+    TVhost tmp;
     cin>>record.ssn;
+    if (cin.fail()){
+        cout<<"Wrong data type!"<<endl;
+        cin.clear();
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        return false;
+    }
+
+    for (int i=1; i<ind.size(); i++){
+        if (!ReadShow(master_tmp, master_file, ind[i].second))
+        {
+            std::cerr << "Unable to update next_ptr. Error: read failed" << std::endl;
+            return false;
+        }
+        if (master_tmp.exists){
+            streampos next_ptr=master_tmp.first_host;
+            while (next_ptr!=-1)
+            {
+                if (!ReadHost(tmp, file, next_ptr))
+                {
+                    std::cerr << "Unable to update next_ptr. Error: read failed" << std::endl;
+                    return false;
+                }
+                if (tmp.exists && tmp.ssn==record.ssn){
+                    cout<<"Host with that SSN exists!"<<endl;
+                    cin.clear();
+                    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    return false;
+                }
+                next_ptr=tmp.next;
+            }
+        }
+    }
+
     cin>>record.first_name;
     cin>>record.second_name;
     cin>>record.email;
@@ -447,6 +560,12 @@ bool AddNodeHost(std::fstream& file, std::fstream& master_file, vector<pair<int,
 
     uint32_t show_id;
     cin>>show_id;
+    if (cin.fail()){
+        cout<<"Wrong data type!"<<endl;
+        cin.clear();
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        return false;
+    }
     streampos master_pos=-1;
     for (int i=1; i<ind.size(); i++)
     {
@@ -456,6 +575,12 @@ bool AddNodeHost(std::fstream& file, std::fstream& master_file, vector<pair<int,
             break;
         }
     }
+
+    if (master_pos==-1){
+        cout<<"Show with that ID doesn't exist!"<<endl;
+        return false;
+    }
+
     TVshow master_record;
 
     if (!ReadShow(master_record, master_file, master_pos))
@@ -557,6 +682,7 @@ bool RemoveNodeHost(std::fstream& file, std::vector<pair<int, streampos>>& ind, 
         }
     }
 
+    std::cerr << "Unable to find host with that SSN" << std::endl;
     return false;
 }
 
@@ -564,7 +690,7 @@ bool RemoveNodeShow(std::fstream& master_file, std::vector<pair<int, streampos>>
                     std::vector<streampos>& rubbish, std::vector<streampos>& slave_rubbish, int num)
 {
     streampos addr;
-    int index;
+    int index=-1;
     for (int i=1; i<ind.size(); i++)
     {
         if (ind[i].first==num)
@@ -574,6 +700,12 @@ bool RemoveNodeShow(std::fstream& master_file, std::vector<pair<int, streampos>>
             break;
         }
     }
+
+    if (index==-1){
+        std::cerr << "Unable to find host with that ID" << std::endl;
+        return false;
+    }
+
     ind.erase(ind.begin()+index);
     TVshow master_tmp;
     TVshow show_tmp;
@@ -613,19 +745,7 @@ bool RemoveNodeShow(std::fstream& master_file, std::vector<pair<int, streampos>>
 
 void CalcNodesShow(std::fstream& file, vector<pair<int, streampos>>& ind)
 {
-    TVshow tmp;
-    int calc=0;
-
-    for (int i=1; i<ind.size(); i++){
-        if (!ReadShow(tmp, file, ind[i].second))
-        {
-            std::cerr << "Unable to update next_ptr. Error: read failed" << std::endl;
-            return;
-        }
-        if (tmp.exists){
-            calc++;
-        }
-    }
+    int calc=ind.size()-1;
     std::cout<<"There are "<<calc<<" TV Show nodes"<<endl;
 }
 
@@ -657,10 +777,6 @@ void CalcNodesHost(std::fstream& file, vector<pair<int, streampos>>& ind, std::f
     }
     std::cout<<"There are "<<calc<<" TV Host nodes"<<endl;
 }
-
-
-
-
 
 void print_help()
 {
